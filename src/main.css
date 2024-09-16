@@ -27,6 +27,23 @@ body { margin: 0; overflow: hidden; }
     cursor: pointer;
     font-size: 16px;
 }
+#speedLabel {
+    font-size: 18px;
+    margin-right: 10px;
+    position: absolute;
+    z-index: 1; /* Ensure button is above the canvas */
+    top: 140px; /* Adjust to your desired vertical position */
+    left: 20px; /* Center horizontally */
+    color: white;
+}
+
+#speedSlider {
+    width: 75px;
+    position: absolute;
+    z-index: 1; /* Ensure button is above the canvas */
+    top: 160px; /* Adjust to your desired vertical position */
+    left: 20px; /* Center horizontally */
+}
 #solutionDisplay {
     position: absolute;
     z-index: 1; /* Ensure button is above the canvas */

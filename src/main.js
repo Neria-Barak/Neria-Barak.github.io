@@ -123,12 +123,12 @@ export function setToMove(arr, vector) {
 
 
 // Animation Loop
+let speed = 0.4;
 function animate() {
     requestAnimationFrame(animate);
 
     if (isMoving) {
       
-      const speed = 0.4;
       
       toMove.forEach((element) => {
         const cube = cubies[element];
@@ -177,3 +177,18 @@ function animate() {
 
 // Start the animation loop
 animate();
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const speedSlider = document.getElementById('speedSlider');
+    const speedValue = document.getElementById('speedValue');
+
+    speedSlider.addEventListener('input', function () {
+        let input = this.value == 0 ? 0.01 : this.value;
+        input = input == 0.5 ? 0.4 : input;
+        input = input == 0.7 ? 0.8 : input;
+        speed = parseFloat(input);
+        speedValue.textContent = `${parseFloat(this.value).toFixed(1)}`;
+    });
+});
+

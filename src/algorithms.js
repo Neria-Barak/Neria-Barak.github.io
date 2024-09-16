@@ -89,7 +89,6 @@ document.addEventListener('keydown', function(event) {
 });
 
 export function isSolved() {
-    console.log("here");
     let x = cubies[0].rotation.x;
     let y = cubies[0].rotation.y;
     let z = cubies[0].rotation.z;
