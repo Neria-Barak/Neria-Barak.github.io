@@ -3,7 +3,7 @@ import { U, D, R, L, F, B } from './moves.js';
 import { cubies } from './main.js';
 // const fs = require('fs');
 // const { parse } = require('csv-parse');
-import { cube } from './cheat.js';
+import { cheatCube } from './cheat.js';
 
 
 function getRandomInt(min, max) {
@@ -68,12 +68,12 @@ export function reset() {
         element.rotation.y = 0;
         element.rotation.z = 0;
     })
-    cube.move(cube.solve());
+    cheatCube.move(cheatCube.solve());
    
 }
 
 export function solve() {
-    move(cube.solve());
+    move(cheatCube.solve());
 }
 
 document.addEventListener('keydown', function(event) {
@@ -110,68 +110,6 @@ function isCrossed() {
     return true;
 }
 
-// Solves cross with a brute-force approach using up to 8 moves
-export function solveCross() {
-    const numMoves = 6;
-    var solution = []
-    for (var a = 0; a < numMoves; a++) {
-        makeMove(a);
-        solution.push(a);
-        if (isCrossed()) return solution;
-        for (var b = 0; b < numMoves; b++) {
-            makeMove(b);
-            solution.push(b);
-            if (isCrossed()) return solution;
-            for (var c = 0; c < numMoves; c++) {
-                makeMove(c);
-                solution.push(c);
-                if (isCrossed()) return solution;
-                for (var d = 0; d < numMoves; d++) {
-                    makeMove(d);
-                    solution.push(d);
-                    if (isCrossed()) return solution;
-                    for (var e = 0; e < numMoves; e++) {
-                        makeMove(e);
-                        solution.push(e);
-                        if (isCrossed()) return solution;
-                        for (var f = 0; f < numMoves; f++) {
-                            makeMove(f);
-                            solution.push(f);
-                            if (isCrossed()) return solution;
-                            for (var g = 0; g < numMoves; g++) {
-                                makeMove(g);
-                                solution.push(g);
-                                if (isCrossed()) return solution;
-                                for (var h = 0; h < numMoves; h++) {
-                                    makeMove(h);
-                                    solution.push(h);
-                                    if (isCrossed()) return solution;
-                                    makeMove(getInverseMove(h));
-                                    solution.pop()
-                                }
-                                makeMove(getInverseMove(g));
-                                solution.pop()
-                            }
-                            makeMove(getInverseMove(f));
-                            solution.pop()
-                        }
-                        makeMove(getInverseMove(e));
-                        solution.pop()
-                    }
-                    makeMove(getInverseMove(d));
-                    solution.pop()
-                }
-                makeMove(getInverseMove(c));
-                solution.pop()
-            }
-            makeMove(getInverseMove(b));
-            solution.pop()
-        }
-        makeMove(getInverseMove(a));
-        solution.pop()
-    }
-}
-
 
 // Helper function to get the inverse of a move
 function getInverseMove(move) {
@@ -184,7 +122,7 @@ function getInverseMove(move) {
     }
 }
 
-async function move(moves) {
+export async function move(moves) {
     let moveList = moves.split(" ");
     let moveTranslate = {
         'U': 0,

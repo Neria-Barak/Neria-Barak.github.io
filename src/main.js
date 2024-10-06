@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Move } from './moves.js';
-import {scramble, solveCross, solve, isSolved} from './algorithms.js';
+import {scramble, solve, isSolved} from './algorithms.js';
 import {start, stop, reset} from './timer.js';
 import { Queue } from './moveQueue.js';
 // import { confetti } from './spectacles.js';

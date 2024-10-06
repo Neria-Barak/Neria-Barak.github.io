@@ -2,7 +2,9 @@ import * as THREE from 'three';
 import { tryMove, setToMove, cubies } from './main.js';
 import { stop } from './timer.js';
 import { isSolved } from './algorithms.js';
-import { cube } from './cheat.js';
+import { cheatCube } from './cheat.js';
+import { cube } from '../Solver/main.js' 
+
 
 export class Move {
     constructor(edges, corners, center, axis, prime, type) {
@@ -20,7 +22,8 @@ export class Move {
         // startMoving([edges.concat(corners).concat([center]), axis]);
         // if (isSolved())
         //     stop();
-        cube.move(this.str);
+        cheatCube.move(this.str);
+        cube.makeMove(this.str);
     }
 }
 export class Rotation {
