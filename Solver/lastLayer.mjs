@@ -36,14 +36,18 @@ function getIdx(cube) {
     return idx;
 }
 
+let needToLoad = true;
+let rows = []
 async function getLLFromCsv(idx) {
-    try {
-        // Use fetch to read the CSV file as text
+    if (needToLoad) {
+        // Fetch the sorted CSV file
         const response = await fetch('./DBs/1LLLDB.txt');
         const data = await response.text();
 
-        // Split the content into rows
-        const rows = data.split('\n');
+        rows = data.split('\n');
+        needToLoad = false;
+    }
+    try {
 
         // Loop through each row
         for (let row of rows) {
@@ -53,6 +57,9 @@ async function getLLFromCsv(idx) {
 
             if (boxes[0].trim() === idx.toString()) {
                 // Return the matching column (third box)
+                if (idx < Math.pow(5, 12)) {
+                    return boxes[1].trim() + 'H';
+                }
                 return boxes[1].trim();
             }
         }

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import readline from 'readline';
-import { RubiksCube } from '../../Solver/cube.js';
+import { RubiksCube } from '../../Solver/cube.mjs';
 
 function reverseAlg(alg) {
     let moves = alg.split(' ');

@@ -1,4 +1,4 @@
-import { faceletsIdx, edgeLocations } from "../public/DBs/dbs.mjs";
+import { faceletsIdx, edgeLocations } from "../Statistics/DBs/dbs.mjs";
 
 function findYellowEdges(cube) {
     const edges = [];
@@ -16,36 +16,56 @@ function findYellowEdges(cube) {
     return edges;
 }
 
-async function getCrossFromCsv([g, o, b, r]) {
-    try {
-        // Use fetch to read the CSV file as text
-        const response = await fetch('../public/DBs/cross.csv');
+function getKey(facelets) {
+    let idx = 0;
+    let pow = 1;
+
+    for (const facelet of facelets) {
+        idx += pow * facelet;
+        pow *= 25;
+    }
+    return idx;
+}
+
+let needToLoad = true;
+let rows = []
+async function getCrossFromCsv(facelets) {
+    if (needToLoad) {
+        // Fetch the sorted CSV file
+        const response = await fetch('../public/DBs/finalCross.csv');
         const data = await response.text();
 
-        // Split the content into rows
-        const rows = data.split('\n');
+        rows = data.split('\n').map(row => row.split(','));
+        needToLoad = false;
+    }
+    try {
+        // Get the key to search for
+        const key = getKey(facelets);
 
-        // Loop through each row
-        for (let row of rows) {
-            // Split each row into columns (boxes)
-            const boxes = row.split(',');
+        // Perform binary search
+        let low = 0;
+        let high = rows.length - 1;
 
-            // Ensure the row has at least 6 columns before proceeding
-            if (boxes.length < 6) continue;
-            // Check if the columns match the values
-            if (boxes[1]?.trim() == g && boxes[2]?.trim() == o && boxes[3]?.trim() == b && boxes[4]?.trim() == r) {
-                // Return the matching column (third box)
-                return boxes[5]?.trim();
+        while (low <= high) {
+            const mid = Math.floor((low + high) / 2);
+            const midKey = parseInt(rows[mid][0]?.trim());
+
+            if (midKey === key) {
+                // Key found, return the associated value (second column)
+                return rows[mid][1]?.trim();
+            } else if (midKey < key) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
             }
         }
 
-        // If no matching row is found
+        // If no matching key is found
         return null;
     } catch (err) {
         console.error('Error fetching the file:', err);
     }
 }
-
 export async function solveCross(cube) {
     const yellowEdgesLocations = findYellowEdges(cube);
     const positions = [-1, -1, -1, -1];

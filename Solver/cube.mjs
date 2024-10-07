@@ -1,17 +1,26 @@
-import { adjacentEdges, edges, corners } from "../public/DBs/dbs.mjs";
+import { adjacentEdges, edges, corners } from "../Statistics/DBs/dbs.mjs";
+import { StatisticsManager } from "../Statistics/StatisticsManager.js";
+import { solveCross } from "./cross.mjs";
+import { solveLL } from "./lastLayer.mjs";
+import { solveF2l } from "./f2l.mjs";
+import { simplifyAlg } from "./utilities.mjs";
 
 export class RubiksCube {
-    constructor() {
-      // Initialize the cube with solved state (each face has a single color)
-      // Faces: [U, F, R, B, L, D] => [Up, Front, Right, Back, Left, Down]
+    constructor(sm) {
+      if (!sm) sm = new StatisticsManager();
+      this.sm = sm;
+      this.sm.notifyStartSolve();
+      
       this.faces = {
-        U: this.createFace('W'), // White
-        F: this.createFace('G'), // Green
-        R: this.createFace('R'), // Red
-        B: this.createFace('B'), // Blue
-        L: this.createFace('O'), // Orange
-        D: this.createFace('Y')  // Yellow
+        U: this.createFace('W'), 
+        F: this.createFace('G'), 
+        R: this.createFace('R'), 
+        B: this.createFace('B'), 
+        L: this.createFace('O'), 
+        D: this.createFace('Y') 
       };
+
+      this.rotationQueue = [];
     }
 
     clone() {
@@ -29,8 +38,7 @@ export class RubiksCube {
 
       return newCube;
   }
-  
-    // Helper to create a face with a single color
+
     createFace(color) {
       return [
         [color, color, color],
@@ -39,7 +47,6 @@ export class RubiksCube {
       ];
     }
   
-    // Rotate a face clockwise
     rotateFaceClockwise(face) {
       const newFace = [
         [face[2][0], face[1][0], face[0][0]],
@@ -154,6 +161,8 @@ export class RubiksCube {
     }
 
     makeMove(move) {
+      if (move[0] === 'x' || move[0] === 'y' || move[0] === 'z') this.rotationQueue.push(move);
+
       let times = 1;
       if (move.length > 1) {
         if (move[1] === '2') times = 2;
@@ -279,5 +288,46 @@ export class RubiksCube {
       }
 
       return null;  // If no corner is found
+    }
+
+    async getSolution() {
+      let tempCube = this.clone();
+      let cross = await solveCross(tempCube);
+      cross = cross.replace(/\s\s+/g, ' ').trim();
+      tempCube.makeAlg(cross);
+      let f2l = solveF2l(tempCube).replace(/\s\s+/g, ' ').trim();
+      tempCube.makeAlg(f2l);
+      let ll = await solveLL(tempCube);
+      ll = ll.replace(/\s\s+/g, ' ').trim();
+      const solution = simplifyAlg(cross + ' ' + f2l + ' ' + ll);
+      this.sm.notifyNumberOfCrossMoves(cross.split(' ').length);
+      this.sm.notifyNumberOfLLMoves(ll.split(' ').length);
+      this.sm.notifyNumberOfTotalMoves(solution.split(' ').length);
+      if (ll.length <= 1) this.sm.notifyLLSkip();
+      if (ll[ll.length - 1] === 'H') {
+        ll = ll.substring(0, ll.length - 1);
+        this.sm.notifyOllSkip();
+      }
+      return solution;
+    }
+
+    scramble(moves = 24) {
+      const faces = ['U', 'D', 'L', 'R', 'F', 'B'];
+      const modifiers = ['', "'", '2'];
+      let scramble = [];
+      
+      for (let i = 0; i < moves; i++) {
+          let move = faces[Math.floor(Math.random() * faces.length)];
+          let modifier = modifiers[Math.floor(Math.random() * modifiers.length)];
+          
+          // Avoid consecutive moves on the same face
+          if (scramble.length > 0 && scramble[scramble.length - 1][0] === move) {
+              i--; // Try again
+          } else {
+              scramble.push(move + modifier);
+          }
+      }
+      
+      this.makeAlg(scramble.join(' '));
     }
 }

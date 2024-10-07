@@ -1,4 +1,4 @@
-import { adjacentEdges, adjacentCorners } from "../public/DBs/dbs.mjs";
+import { adjacentEdges, adjacentCorners } from "../Statistics/DBs/dbs.mjs";
 import { RubiksCube } from "./cube.mjs";
 import { solveCross } from "./cross.mjs";
 import { solveLL } from "./lastLayer.mjs";

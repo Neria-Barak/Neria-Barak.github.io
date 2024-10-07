@@ -13,7 +13,7 @@ export class Move {
         this.center = center;
         this.axis = prime ? axis.multiplyScalar(-1) : axis;
         this.isPrime = prime;
-        this.str = prime ? type+ '\'' : type;
+        this.str = prime ? type + '\'' : type;
 	}
     moveCube() {
         swap(this.edges);
@@ -30,7 +30,7 @@ export class Rotation {
     constructor(swap1, swap2, swap3, swap4, swap5, swap6, axis, prime, type) {
         this.axis = prime ? axis.multiplyScalar(-1) : axis;
         this.isPrime = prime;
-        this.str = prime ? type.replace(/  /g, '_').replace(/\'/g, '').replace(/_/g, '\' ') : type;
+        this.str = prime ? type + '\'' : type;
         this.swap1 = prime ? swap1.reverse() : swap1;
         this.swap2 = prime ? swap2.reverse() : swap2;
         this.swap3 = prime ? swap3.reverse() : swap3;
@@ -50,7 +50,7 @@ export class Rotation {
         let toMove = [];
         for (let i = 0; i < 27; i++) toMove.push(i);
         setToMove(toMove, this.axis);
-        cube.move(this.str);
+        cube.makeMove(this.str);
     }
 }
 
@@ -91,13 +91,13 @@ export function E(prime) {
     tryMove(new Move([5, 3, 21, 23], [14, 4, 12, 22], 13, new THREE.Vector3(0, 1, 0), prime, "E"));
 }
 export function X(prime) {
-    tryMove(new Rotation([22, 10, 4, 16], [25, 19, 1, 7], [17, 23, 11, 5], [8, 26, 20, 2], [3, 15, 21, 9], [0, 6, 24, 18], new THREE.Vector3(0, 0, 1), prime, "L\' M\' R  "));
+    tryMove(new Rotation([22, 10, 4, 16], [25, 19, 1, 7], [17, 23, 11, 5], [8, 26, 20, 2], [3, 15, 21, 9], [0, 6, 24, 18], new THREE.Vector3(0, 0, 1), prime, "x"));
 }
 export function Y(prime) {
-    tryMove(new Rotation([23, 21, 3, 5], [22, 12, 4, 14], [7, 17, 25, 15], [8, 26, 24, 6], [11, 19, 9, 1], [2, 20, 18, 0], new THREE.Vector3(0, -1, 0), prime, "U  E\' D\'"));
+    tryMove(new Rotation([23, 21, 3, 5], [22, 12, 4, 14], [7, 17, 25, 15], [8, 26, 24, 6], [11, 19, 9, 1], [2, 20, 18, 0], new THREE.Vector3(0, -1, 0), prime, "y"));
 }
 export function Z(prime) {
-    tryMove(new Rotation([16, 14, 10, 12], [17, 11, 9, 15], [19, 21, 25, 23], [18, 24, 26, 20], [5, 1, 3, 7], [8, 2, 0, 6], new THREE.Vector3(-1, 0, 0), prime, "F  S  B\'"));
+    tryMove(new Rotation([16, 14, 10, 12], [17, 11, 9, 15], [19, 21, 25, 23], [18, 24, 26, 20], [5, 1, 3, 7], [8, 2, 0, 6], new THREE.Vector3(-1, 0, 0), prime, "z"));
 }
 
 document.addEventListener('keyup', function(event) {
